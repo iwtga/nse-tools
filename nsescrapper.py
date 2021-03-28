@@ -1,6 +1,5 @@
 from bs4 import BeautifulSoup   # Importing BS4 which will be needed for web scrapping
 import requests                 # Requests will be required to do a GET request to the NSE website
-from selenium import webdriver
 
 def get_info(stock_list):
     # Necessary Headers for the GET request
@@ -10,16 +9,13 @@ def get_info(stock_list):
 
     for stock in stock_list:
         d = {}      # Initializing a dictionary to store data about the particular stock
-        # html_content = requests.get(f'https://www.nseindia.com/get-quotes/equity?symbol={stock}', headers=headers).text
-        driver = webdriver.Firefox()
-        driver.get(f'https://www.nseindia.com/get-quotes/equity?symbol={stock}')
-        html_content = driver.execute_script("return document.documentElement.outerHTML")
+
+        # getting the html page
+        html_content = requests.get(f'https://www1.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuote.jsp?symbol={stock}&illiquid=0&smeFlag=0&itpFlag=0', headers=headers).text
+
         soup = BeautifulSoup(html_content, 'lxml')      # Creating a BeautifulSoup instance with lxml parser
-        price_table = soup.find_all('table', class_='w-100')
-        print(price_table)
+        print(soup)
+
 
 if __name__ == '__main__':
     db = get_info(["RELIANCE"])
-
-    https://www.nseindia.com/api/quote-equity?symbol=RELIANCE
-    https://www.nseindia.com/api/quote-equity?symbol=RELIANCE&section=trade_info
