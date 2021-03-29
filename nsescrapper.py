@@ -16,8 +16,10 @@ def get_info(stock_list):
 
         soup = BeautifulSoup(html_content, 'lxml')      # Creating a BeautifulSoup instance with lxml parser
 
+        # scrapping the json data from the website and converting it into a python dict
         stock_data = json.loads(soup.find('div', id='responseDiv').text.strip())["data"][0]
 
+        # storing the needed fetched values
         d['stock'] = stock
         d['open'] = stock_data['open']
         d['dayHigh'] = stock_data['dayHigh']
@@ -26,9 +28,10 @@ def get_info(stock_list):
         d['totalTradedVolume'] = stock_data['totalTradedVolume']
         d['deliveryToTradedQuantity'] = stock_data['deliveryToTradedQuantity']
 
+        # Appending the dictionary object for the particular stock in the result list
         res.append(d)
-    return res
+    return res  # return a list of dictionary objects
 
 if __name__ == '__main__':
-    db = get_info(['RELIANCE', 'HDFCBANK', 'ADANIPORTS', 'ITC', 'SBIN', 'IOC', 'RBLBANK'])
-    print(json.dumps(db, indent=2))
+    db = get_info(['RELIANCE', 'HDFCBANK', 'ADANIPORTS', 'ITC', 'SBIN', 'IOC', 'RBLBANK'])  # function call, params will be list of stocks
+    print(json.dumps(db, indent=2))     # Converting the dictionary object into a json readable string
