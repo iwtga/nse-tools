@@ -12,15 +12,23 @@ def get_info(stock_list):
         d = {}      # Initializing a dictionary to store data about the particular stock
 
         # getting the html page
-        html_content = requests.get(f'https://www1.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuote.jsp?symbol={stock}&illiquid=0&smeFlag=0&itpFlag=0', headers=headers).text
+        html_content = requests.get(f'https://www1.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuote.jsp?symbol={stock}', headers=headers).text
 
         soup = BeautifulSoup(html_content, 'lxml')      # Creating a BeautifulSoup instance with lxml parser
 
         stock_data = json.loads(soup.find('div', id='responseDiv').text.strip())["data"][0]
-        print(stock_data)
+
+        d['stock'] = stock
         d['open'] = stock_data['open']
         d['dayHigh'] = stock_data['dayHigh']
         d['dayLow'] = stock_data['dayLow']
+        d['closePrice'] = stock_data['closePrice']
+        d['totalTradedVolume'] = stock_data['totalTradedVolume']
+        d['deliveryToTradedQuantity'] = stock_data['deliveryToTradedQuantity']
+
+        res.append(d)
+    return res
 
 if __name__ == '__main__':
-    db = get_info(["RELIANCE"])
+    db = get_info(['RELIANCE', 'HDFCBANK', 'ADANIPORTS', 'ITC', 'SBIN', 'IOC', 'RBLBANK'])
+    print(json.dumps(db, indent=2))
