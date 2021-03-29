@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup   # Importing BS4 which will be needed for web scrapping
 import requests                 # Requests will be required to do a GET request to the NSE website
+import json                     # importing json module to convert a string of json data into python dict
 
 def get_info(stock_list):
     # Necessary Headers for the GET request
@@ -14,8 +15,12 @@ def get_info(stock_list):
         html_content = requests.get(f'https://www1.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuote.jsp?symbol={stock}&illiquid=0&smeFlag=0&itpFlag=0', headers=headers).text
 
         soup = BeautifulSoup(html_content, 'lxml')      # Creating a BeautifulSoup instance with lxml parser
-        print(soup)
 
+        stock_data = json.loads(soup.find('div', id='responseDiv').text.strip())["data"][0]
+        print(stock_data)
+        d['open'] = stock_data['open']
+        d['dayHigh'] = stock_data['dayHigh']
+        d['dayLow'] = stock_data['dayLow']
 
 if __name__ == '__main__':
     db = get_info(["RELIANCE"])
